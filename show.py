@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.widgets import MultiCursor
+# from matplotlib.widgets import MultiCursor
 import matplotlib.dates as mdate
 import pandas as pd
 
@@ -43,10 +43,11 @@ class ShowData(object):
         ax4.grid(True)
         ax4.legend(title="小类")
 
-        multi = MultiCursor(fig.canvas, (ax1, ax2, ax3, ax4), color='r', lw=1, linestyle=':',
-                    horizOn=False, vertOn=True)
+        # multi = MultiCursor(fig.canvas, (ax1, ax2, ax3, ax4), color='r', lw=1, linestyle=':',
+        #             horizOn=False, vertOn=True)
 
         plt.xlabel("店名")
+        plt.savefig('/')
         plt.show()
 
 
