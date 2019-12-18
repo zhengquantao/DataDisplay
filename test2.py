@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+from matplotlib.font_manager import FontProperties
+font = FontProperties(fname="./font/FangSong.ttf")
 # Fixing random state for reproducibility
 np.random.seed(19680801)
 
@@ -22,6 +23,7 @@ axs[0].grid(True)
 
 axs[1].plot(s1, s2, 256, 1. / dt)
 axs[1].set_ylabel('coherence')
-
+axs[1].legend(title="你好dsffffss", loc="upper left",  bbox_to_anchor=(-0.3, 1.0), prop=font)
 fig.tight_layout()
+plt.xticks(rotation=45)  # rotation旋转的度数
 plt.show()
