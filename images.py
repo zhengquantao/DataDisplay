@@ -7,6 +7,8 @@ import random
 
 font = FontProperties(fname="/home/zhengquantao/python/DataDisplay/font/FangSong.ttf")
 
+appear_day = 3
+
 
 def find_file(file: str, name: str):
     mul_file_name = os.walk(file)
@@ -23,27 +25,30 @@ def find_file(file: str, name: str):
                     datetime_list.append(filename[0][5:])
                     break
     result = pd.concat(frame)
-    sort_result = result.sort_values(['ASIN', 'date'])
+    sort_result = result.sort_values(by=['ASIN', 'date'])
     group_data = sort_result.groupby(['ASIN'])  # .apply(lambda x: x.sort_values("date", ascending=True))
+
+    group_count = group_data['ASIN'].size().to_dict()  # 转化成字典
+    group_rank = sorted(group_count, key=lambda x: group_count[x], reverse=True)  # 字典排序
+
     names = name.split(".")[0]
 
     # ===============评分===========
     fig = plt.figure(figsize=(14, 7))
     ax1 = fig.subplots(nrows=1)
-    plt.rcParams['font.sans-serif'] = ['SimHei']
-    for good in group_data:
-
-        create_file("image/"+names)
-
-        shop_score = good[1]['评分'].fillna(0)
-
-        datetime = good[1]['date'].fillna('0')
-
-        ax1.plot(datetime, shop_score, random_color(), label=good[0])
-        ax1.legend(title=u"评分", loc='right', bbox_to_anchor=(-0.015, 0.6))
-        ax1.grid(True)
+    # plt.rcParams['font.sans-serif'] = ['SimHei']
+    for rank in group_rank:
+        for good in group_data:
+            if rank == good[0] and len(good[1]) > appear_day:
+                create_file("image/"+names)
+                shop_score = good[1]['评分'].fillna(0)
+                datetime = good[1]['date'].fillna('0')
+                ax1.plot(datetime, shop_score, random_color(), label=good[0])
+                ax1.legend(title=u"GOODS", loc='right', bbox_to_anchor=(-0.015, 0.6))
+                ax1.grid(True)
     plt.xlabel(name, fontproperties=font)
     plt.xticks(rotation=45)
+    plt.title(names+" 评分", fontproperties=font)
     plt.savefig('./image/'+names+'/'+'评分.png')
     # plt.cla()
     # plt.close()
@@ -52,19 +57,19 @@ def find_file(file: str, name: str):
     # ================评论==========
     fig = plt.figure(figsize=(14.5, 7))
     ax1 = fig.subplots(nrows=1)
-    plt.rcParams['font.sans-serif'] = ['SimHei']
-    for good in group_data:
-
-        create_file("image/" + names)
-
-        shop_comment = good[1]['评论数'].fillna(0)
-
-        datetime = good[1]['date'].fillna('0')
-        ax1.plot(datetime, shop_comment, random_color(), label=good[0])
-        ax1.legend(title=u"评论数", loc='right', bbox_to_anchor=(-0.04, 0.6))
-        ax1.grid(True)
+    # plt.rcParams['font.sans-serif'] = ['SimHei']
+    create_file("image/" + names)
+    for rank in group_rank:
+        for good in group_data:
+            if rank == good[0] and len(good[1]) > appear_day:
+                shop_comment = good[1]['评论数'].fillna(0)
+                datetime = good[1]['date'].fillna('0')
+                ax1.plot(datetime, shop_comment, random_color(), label=good[0])
+                ax1.legend(title=u"GOODS", loc='right', bbox_to_anchor=(-0.04, 0.6))
+                ax1.grid(True)
     plt.xlabel(name, fontproperties=font)
     plt.xticks(rotation=45)
+    plt.title(names+" 评论数", fontproperties=font)
     plt.savefig('./image/'+names+'/'+'评论数.png')
     # plt.cla()
     # plt.close()
@@ -73,17 +78,19 @@ def find_file(file: str, name: str):
     # ================大类排名=================
     fig = plt.figure(figsize=(14.5, 7))
     ax1 = fig.subplots(nrows=1)
-    plt.rcParams['font.sans-serif'] = ['SimHei']
-    for good in group_data:
-
-        create_file("image/" + names)
-        shop_big_ranking = good[1]['大类排名'].fillna(0)
-        datetime = good[1]['date'].fillna('0')
-        ax1.plot(datetime, -shop_big_ranking, random_color(), label=good[0])
-        ax1.legend(title=u"大类排名", loc='right', bbox_to_anchor=(-0.03, 0.6))
-        ax1.grid(True)
+    # plt.rcParams['font.sans-serif'] = ['SimHei']
+    create_file("image/" + names)
+    for rank in group_rank:
+        for good in group_data:
+            if rank == good[0] and len(good[1]) > appear_day:
+                shop_big_ranking = good[1]['大类排名'].fillna(0)
+                datetime = good[1]['date'].fillna('0')
+                ax1.plot(datetime, -shop_big_ranking, random_color(), label=good[0])
+                ax1.legend(title=u"GOODS", loc='right', bbox_to_anchor=(-0.03, 0.6))
+                ax1.grid(True)
     plt.xlabel(name, fontproperties=font)
     plt.xticks(rotation=45)
+    plt.title(names+" 大类排名", fontproperties=font)
     plt.savefig('./image/'+names+'/'+'大类排名.png')
     # plt.cla()
     # plt.close()
@@ -92,18 +99,19 @@ def find_file(file: str, name: str):
     # ================小类排名=================
     fig = plt.figure(figsize=(14.5, 7))
     ax1 = fig.subplots(nrows=1)
-    plt.rcParams['font.sans-serif'] = ['SimHei']
-    for good in group_data:
-
-        create_file("image/" + names)
-
-        shop_small_ranking = good[1]['小类排名'].fillna(0)
-        datetime = good[1]['date'].fillna('0')
-        ax1.plot(datetime, -shop_small_ranking, random_color(), label=good[0])
-        ax1.legend(title=u"小类排名", loc='right', bbox_to_anchor=(-0.04, 0.6))
-        ax1.grid(True)
+    # plt.rcParams['font.sans-serif'] = ['SimHei']
+    create_file("image/" + names)
+    for rank in group_rank:
+        for good in group_data:
+            if rank == good[0] and len(good[1]) > appear_day:
+                shop_small_ranking = good[1]['小类排名'].fillna(0)
+                datetime = good[1]['date'].fillna('0')
+                ax1.plot(datetime, -shop_small_ranking, random_color(), label=good[0])
+                ax1.legend(title=u"GOODS", loc='right', bbox_to_anchor=(-0.04, 0.6))
+                ax1.grid(True)
     plt.xlabel(name, fontproperties=font)
     plt.xticks(rotation=45)
+    plt.title(names+" 小类排名", fontproperties=font)
     plt.savefig('./image/'+names+'/'+'小类排名.png')
     # plt.cla()
     # plt.close()
@@ -120,49 +128,14 @@ def create_file(file: str):
 
 
 def random_color():
+    """
+    颜色函数
+    """
     color_arr = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']
     color = ""
     for i in range(6):
         color += color_arr[random.randint(0, 14)]
     return "#"+color
-
-
-def plot(data: object, filename: str, name: str):
-    """
-    展示数据
-    data: 数据
-    datetime: 时间
-    filename: 文件夹
-    name: 文件名
-    """
-    shop_score = data['评分'].fillna('0')
-    shop_comment = data['评论数'].fillna('0')
-    shop_big_ranking = data['大类排名'].fillna('0')
-    shop_small_ranking = data['小类排名'].fillna('0')
-    datetime = data['date'].fillna('0')
-
-    fig = plt.figure(figsize=(11, 6))
-    (ax1, ax2, ax3, ax4) = fig.subplots(nrows=4)
-    plt.rcParams['font.sans-serif'] = ['SimHei']
-
-    ax1.plot(datetime, shop_score, "red", label=name)
-    ax1.legend(title="评分")
-    ax1.grid(True)
-
-    # ax2.plot(datetime, shop_comment, "red", label="评论数")
-    # ax2.legend(title="评论数")
-    # ax2.grid(True)
-    #
-    # ax3.plot(datetime, shop_big_ranking, "red", label="大类")
-    # ax3.grid(True)
-    # ax3.legend(title="大类")
-    #
-    # ax4.plot(datetime, shop_small_ranking, "red", label="小类")
-    # ax4.grid(True)
-    # ax4.legend(title="小类")
-
-    # multi = MultiCursor(fig.canvas, (ax1, ax2, ax3, ax4), color='r', lw=1, linestyle=':',
-    #             horizOn=False, vertOn=True)
 
 
 # find_file("shop")
