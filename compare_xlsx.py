@@ -5,6 +5,9 @@ import numpy as np
 import datetime
 import xlwt
 
+# 变化范围 [评分(升,降), 评论数(升,降), 大类排名(升,降), 小类排名(升,降)]
+change_range = [(1, 1), (10, 10), (1000, 1000), (1000, 1000)]
+
 
 def read_file(file: str, name: str):
     mul_file_name = os.walk(file)
@@ -66,7 +69,6 @@ def compare_data(file: str, name: str):
                               asin_comment, '', 0, before_item[1], asin_big_ranking, '', 0,
                               before_item[1], asin_small_ranking])
 
-    print(all_array)
     print("="*80)
     last_week_date = last_week.split("/")[1]
     create_file(now_week+"A"+last_week_date)
@@ -100,16 +102,15 @@ def compare_data(file: str, name: str):
     # 下降样式 绿色降
     style_drop = xlwt.easyxf("""pattern: pattern solid, fore_colour 0x2A""")
     # 不变样式 金色
-    style_not_change = xlwt.easyxf("""pattern: pattern solid, fore_colour 0x33""")
-
+    style_not_change = xlwt.easyxf("""pattern: pattern solid, fore_colour 43""")
     # 深红
-    style_deep_rise = xlwt.easyxf("""pattern: pattern solid, fore_colour red""")
+    style_deep_rise = xlwt.easyxf("""pattern: pattern solid, fore_colour 6""")
     # 深绿
-    style_deep_drop = xlwt.easyxf("""pattern: pattern solid, fore_colour green""")
+    style_deep_drop = xlwt.easyxf("""pattern: pattern solid, fore_colour 3""")
     # 微红
-    style_litter_rise = xlwt.easyxf("""pattern: pattern solid, fore_colour dark_red""")
+    style_litter_rise = xlwt.easyxf("""pattern: pattern solid, fore_colour 45""")
     # 微绿
-    style_litter_drop = xlwt.easyxf("""pattern: pattern solid, fore_colour light_green""")
+    style_litter_drop = xlwt.easyxf("""pattern: pattern solid, fore_colour 42""")
 
     # 写入文件标题
     sheet.write(0, 0, 'ASIN', style_heading)
@@ -136,36 +137,60 @@ def compare_data(file: str, name: str):
         sheet.write(data_row, 1, i[1])
         sheet.write(data_row, 2, i[2])
         if i[3] > 0:
-            sheet.write(data_row, 3, i[3], style_rise)
+            if i[3] >= change_range[0][1]:
+                sheet.write(data_row, 3, i[3], style_deep_rise)
+            else:
+                sheet.write(data_row, 3, i[3], style_litter_rise)
         elif i[3] < 0:
-            sheet.write(data_row, 3, i[3], style_drop)
+            if abs(i[3]) < change_range[0][1]:
+                sheet.write(data_row, 3, i[3], style_litter_drop)
+            else:
+                sheet.write(data_row, 3, i[3], style_deep_drop)
         else:
             sheet.write(data_row, 3, i[3], style_not_change)
         sheet.write(data_row, 4, i[4])
         sheet.write(data_row, 5, i[5])
         sheet.write(data_row, 6, i[6])
         if i[7] > 0:
-            sheet.write(data_row, 7, i[7], style_rise)
+            if i[7] >= change_range[1][0]:
+                sheet.write(data_row, 7, i[7], style_deep_rise)
+            else:
+                sheet.write(data_row, 7, i[7], style_litter_rise)
         elif i[7] < 0:
-            sheet.write(data_row, 7, i[7], style_drop)
+            if abs(i[7]) < change_range[1][1]:
+                sheet.write(data_row, 7, i[7], style_litter_drop)
+            else:
+                sheet.write(data_row, 7, i[7], style_deep_drop)
         else:
             sheet.write(data_row, 7, i[7], style_not_change)
         sheet.write(data_row, 8, i[8])
         sheet.write(data_row, 9, i[9])
         sheet.write(data_row, 10, i[10])
         if i[11] > 0:
-            sheet.write(data_row, 11, -i[11], style_drop)
+            if i[11] >= change_range[2][1]:
+                sheet.write(data_row, 11, -i[11], style_deep_drop)
+            else:
+                sheet.write(data_row, 11, -i[11], style_litter_drop)
         elif i[11] < 0:
-            sheet.write(data_row, 11, abs(i[11]), style_rise)
+            if abs(i[11]) < change_range[2][0]:
+                sheet.write(data_row, 11, abs(i[11]), style_litter_rise)
+            else:
+                sheet.write(data_row, 11, abs(i[11]), style_deep_rise)
         else:
             sheet.write(data_row, 11, i[11], style_not_change)
         sheet.write(data_row, 12, i[12])
         sheet.write(data_row, 13, i[13])
         sheet.write(data_row, 14, i[14])
         if i[15] > 0:
-            sheet.write(data_row, 15, -i[15], style_drop)
+            if i[15] >= change_range[3][1]:
+                sheet.write(data_row, 15, -i[15], style_deep_drop)
+            else:
+                sheet.write(data_row, 15, -i[15], style_litter_drop)
         elif i[15] < 0:
-            sheet.write(data_row, 15, abs(i[15]), style_rise)
+            if abs(i[15]) < change_range[3][0]:
+                sheet.write(data_row, 15, abs(i[15]), style_litter_rise)
+            else:
+                sheet.write(data_row, 15, abs(i[15]), style_deep_rise)
         else:
             sheet.write(data_row, 15, i[15], style_not_change)
         data_row = data_row + 1
